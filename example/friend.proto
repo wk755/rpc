@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package fixbug;
+
+option cc_generic_services = true; //启用c++的通用gRPC服务代码生成
+
+//错误码消息
+message ResultCode
+{
+    int32 errcode=1; //0代表成功， 1代表失败，1，2是字段编号，因为protobuf是二进制存储，所以要用数字+类型代替
+    bytes errmsg=2; //错误信息
+}
+
+message GetFriendsListRequest
+{
+    uint32 user_id=1; //无符号整数
+}
+
+message GetFriendsListResponse
+{
+    ResultCode result=1; //错误码表示请求是否成功
+    repeated bytes friends=2; //可变长数组，存储好友列表
+}
+
+//定义远程服务FriendServiceRpc
+service FriendServiceRpc
+{
+    rpc GetFriendsList(GetFriendsListRequest) returns(GetFriendsListResponse);
+}
